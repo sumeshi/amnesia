@@ -1,6 +1,7 @@
 package view
 
 import (
+    "time"
     "net/http"
 
     "github.com/labstack/echo"
@@ -10,7 +11,12 @@ import (
 
 type Post struct {
     Id int `json:"id" gorm:"primary_key;AUTO_INCREMENT"`
+    Title string `json:"title" gorm:"type:varchar(127)"`
     Text string `json:"text"`
+    CategoryId int `json:"category_id"`
+    Category Category `json:"category" gorm:"foreignkey:Id;association_foreignkey:CategoryId"`
+    CreatedAt time.Time `json:"created_at"`
+    UpdatedAt time.Time `json:"updated_at"`
 }
 
 func GetAllPosts(c echo.Context) error {
@@ -46,8 +52,8 @@ func CreatePost(c echo.Context) error {
     if err := c.Bind(post); err != nil {
         return err
     }
-    db.Create(&post)
 
+    db.Create(&post)
     return c.JSON(http.StatusOK, post)
 }
 
@@ -67,7 +73,6 @@ func UpdatePost(c echo.Context) error {
     } else {
         return c.JSON(http.StatusNotFound, nil)
     }
-
 }
 
 func DeletePost(c echo.Context) error {
