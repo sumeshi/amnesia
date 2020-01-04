@@ -9,12 +9,15 @@ import (
 func main() {
     e := echo.New()
 
-    // routings
     initRouting(e)
 
     e.Logger.Fatal(e.Start(":1323"))
 }
 
 func initRouting(e *echo.Echo) {
-    e.GET("/", view.Hello)
+    e.GET("/posts", view.GetAllPosts)
+    e.GET("/posts/:id", view.GetPost)
+    e.POST("/posts", view.CreatePost)
+    e.PUT("/posts/:id", view.UpdatePost)
+    e.DELETE("/posts/:id", view.DeletePost)
 }
